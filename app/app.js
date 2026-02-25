@@ -1,6 +1,6 @@
 // app/app.js
 
-import t from "../titan/titan";
+import t from "../titan/titan.js";
 
 t.post("/lg").action("login") // pass a json payload { "username": "titan", "password": "planet" }
 
