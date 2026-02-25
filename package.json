@@ -1,0 +1,27 @@
+{
+  "name": "titanpl-ex",
+  "version": "1.0.0",
+  "description": "A production ready server for test titanpl",
+  "type": "module",
+  "titan": {
+    "template": "js"
+  },
+  "dependencies": {
+    "@titanpl/core": "latest",
+    "@titanpl/node": "^1.0.1",
+    "bcryptjs": "^3.0.3",
+    "chokidar": "^5.0.0",
+    "esbuild": "^0.27.2"
+  },
+  "scripts": {
+    "build": "titan build",
+    "dev": "titan dev",
+    "start": "titan start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "eslint-plugin-titanpl": "latest"
+  }
+}

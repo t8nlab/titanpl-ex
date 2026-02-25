@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "module": "esnext",
+        "target": "esnext",
+        "checkJs": false,
+        "noImplicitAny": false,
+        "allowJs": true,
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "paths": {
+            "@titan/native": [
+                "app/t.native"
+            ],
+            "@titan/route": [
+                "./titan/titan"
+            ],
+            "*": [
+                "./app/*"
+            ]
+        }
+    },
+    "include": [
+        "app/**/*",
+        "titan/**/*",
+        "node_modules/**/titan-ext.d.ts"
+    ]
+}
