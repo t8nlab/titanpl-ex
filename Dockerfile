@@ -11,7 +11,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/root/.cargo/bin:${PATH}"
-ENV NODE_ENV=production
 ENV RUSTFLAGS="-C strip=symbols"
 
 WORKDIR /app
