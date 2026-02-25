@@ -33,8 +33,6 @@ RUN npm install -g @ezetgalaxy/titan@latest
 # ---------- Copy Project ----------
 COPY . .
 
-RUN node app/app.js --build
-
 # ---------- Extensions ----------
 SHELL ["/bin/bash", "-c"]
 RUN mkdir -p /app/.ext && \
@@ -77,8 +75,8 @@ COPY --from=builder /app/server/src/actions ./actions
 # Public assets
 # COPY --from=builder /app/app/public ./public
 
-#DB
-# COPY --from=builder /app/app/db ./db
+# DB
+COPY --from=builder /app/app/db ./db
 
 # Any custom / extra folders
 # Example:
