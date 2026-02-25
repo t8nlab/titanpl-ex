@@ -5,10 +5,10 @@ FROM node:20.20.0-slim AS builder
 
 # ---- System deps ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates build-essential pkg-config libssl-dev git bash \
-    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
-       sh -s -- -y --default-toolchain stable --profile minimal \
-    && rm -rf /var/lib/apt/lists/*
+  curl ca-certificates build-essential pkg-config libssl-dev git bash \
+  && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
+  sh -s -- -y --default-toolchain stable --profile minimal \
+  && rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 ENV RUSTFLAGS="-C strip=symbols"
@@ -36,6 +36,7 @@ RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # Install Titan CLI globally
 RUN npm install -g @ezetgalaxy/titan@latest
+RUN npm install
 
 # ------------------------------------------------
 # 3️⃣ Copy Full Project
@@ -47,21 +48,20 @@ COPY . .
 # ------------------------------------------------
 SHELL ["/bin/bash", "-c"]
 RUN mkdir -p /app/.ext && \
-    if [ -d node_modules ]; then \
-      find node_modules -type f -name "titan.json" -print0 | \
-      while IFS= read -r -d '' file; do \
-        pkg_dir="$(dirname "$file")"; \
-        pkg_name="$(basename "$pkg_dir")"; \
-        cp -r "$pkg_dir" "/app/.ext/$pkg_name"; \
-        rm -rf "/app/.ext/$pkg_name/node_modules"; \
-      done; \
-    fi
+  if [ -d node_modules ]; then \
+  find node_modules -type f -name "titan.json" -print0 | \
+  while IFS= read -r -d '' file; do \
+  pkg_dir="$(dirname "$file")"; \
+  pkg_name="$(basename "$pkg_dir")"; \
+  cp -r "$pkg_dir" "/app/.ext/$pkg_name"; \
+  rm -rf "/app/.ext/$pkg_name/node_modules"; \
+  done; \
+  fi
 
 # ------------------------------------------------
 # 5️⃣ Titan Production Build
 # ------------------------------------------------
-RUN titan build
-
+RUN node app/app.js --build
 
 
 # ================================================================
@@ -70,8 +70,8 @@ RUN titan build
 FROM debian:bookworm-slim
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+  apt-get install -y --no-install-recommends ca-certificates curl && \
+  rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -89,8 +89,8 @@ COPY --from=builder /app/app/db ./db
 
 # ---- Security hardening ----
 RUN chmod +x ./titan-server && \
-    useradd -m titan && \
-    chown -R titan:titan /app
+  useradd -m titan && \
+  chown -R titan:titan /app
 
 USER titan
 
