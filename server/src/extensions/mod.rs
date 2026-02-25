@@ -63,7 +63,6 @@ pub enum TitanAsyncOp {
     DbQuery {
         conn: String,
         query: String,
-        params: Vec<String>,
     },
     FsRead {
         path: String,

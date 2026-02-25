@@ -207,36 +207,21 @@ if (!globalThis.__TITAN_CORE_LOADED__) {
     }
 
     // db.connect
-    // db.connect
     if (t.db && !t.db.__titanWrapped) {
         const nativeDbConnect = t.db.connect;
 
-        t.db.connect = function (connString, options = {}) {
-            const conn = nativeDbConnect(connString, options);
+        t.db.connect = function (connString) {
+            const conn = nativeDbConnect(connString);
 
             if (!conn.query.__titanWrapped) {
                 const nativeQuery = conn.query;
-
-                conn.query = function (sql, params = []) {
-                    if (typeof sql !== "string" || !sql.trim()) {
-                        throw new Error("db.query(): SQL string required");
-                    }
-
-                    if (!Array.isArray(params)) {
-                        throw new Error("db.query(): params must be array");
-                    }
-
+                conn.query = (sql) => {
                     return createAsyncOp({
                         __titanAsync: true,
                         type: "db_query",
-                        data: {
-                            conn: connString,
-                            query: sql,
-                            params
-                        }
+                        data: { conn: connString, query: sql }
                     });
                 };
-
                 conn.query.__titanWrapped = true;
             }
 
