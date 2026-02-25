@@ -6,7 +6,7 @@ FROM node:20.20.0-slim AS builder
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl ca-certificates build-essential pkg-config libssl-dev git bash \
     && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
-       sh -s -- -y --default-toolchain stable --profile minimal \
+    sh -s -- -y --default-toolchain stable --profile minimal \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PATH="/root/.cargo/bin:${PATH}"
@@ -24,11 +24,14 @@ RUN cargo build --release
 RUN rm src/main.rs
 WORKDIR /app
 
+
+RUN npm install -g @ezetgalaxy/titan@latest
+
+RUN npm install
+
 # ---------- Node Cache ----------
 COPY package.json package-lock.json* ./
 RUN npm ci
-
-RUN npm install -g @ezetgalaxy/titan@latest
 
 # ---------- Copy Project ----------
 COPY . .
@@ -38,10 +41,10 @@ SHELL ["/bin/bash", "-c"]
 RUN mkdir -p /app/.ext && \
     find /app/node_modules -type f -name "titan.json" -print0 | \
     while IFS= read -r -d '' file; do \
-        pkg_dir="$(dirname "$file")"; \
-        pkg_name="$(basename "$pkg_dir")"; \
-        cp -r "$pkg_dir" "/app/.ext/$pkg_name"; \
-        rm -rf "/app/.ext/$pkg_name/node_modules"; \
+    pkg_dir="$(dirname "$file")"; \
+    pkg_name="$(basename "$pkg_dir")"; \
+    cp -r "$pkg_dir" "/app/.ext/$pkg_name"; \
+    rm -rf "/app/.ext/$pkg_name/node_modules"; \
     done
 
 RUN titan build
