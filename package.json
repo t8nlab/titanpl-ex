@@ -1,7 +1,7 @@
 {
-  "name": "titanpl-ex",
+  "name": "titanpl",
   "version": "1.0.0",
-  "description": "A production ready server for test titanpl",
+  "description": "A Titan Planet server",
   "type": "module",
   "titan": {
     "template": "js"
