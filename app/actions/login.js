@@ -3,18 +3,17 @@
 /* eslint-disable titanpl/drift-only-titan-async */
 import "@titanpl/node/globals";
 import bcrypt from "bcryptjs"
-import { fs, log, response } from "@titan/native";
 import { db } from "db/db";
 
 export const login = (req) => {
 
 
-    const sql = fs.readFile(`${t.env.TITAN_DEV == 1 ? "../app/db/login.sql" : "./db/login.sql"}`);
+    const sql = t.fs.readFile("db/login.sql");
 
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return response.json(
+        return t.response.json(
             { error: "Username and password required" },
             { status: 400 }
         );
@@ -27,7 +26,7 @@ export const login = (req) => {
     );
 
     if (!rows || rows.length === 0) {
-        return response.json(
+        return t.response.json(
             { error: "Invalid credentials" },
             { status: 401 }
         );
@@ -39,7 +38,7 @@ export const login = (req) => {
     const valid = bcrypt.compareSync(password, user.password);
 
     if (!valid) {
-        return response.json(
+        return t.response.json(
             { error: "Invalid credentials" },
             { status: 401 }
         );
@@ -57,7 +56,7 @@ export const login = (req) => {
         { expiresIn: "1m" }
     );
 
-    return response.json({
+    return t.response.json({
         success: true,
         token,
         user
