@@ -7,11 +7,19 @@
     "template": "js"
   },
   "dependencies": {
+    "@titanpl/cli": "latest",
     "@titanpl/core": "latest",
-    "@titanpl/node": "^1.0.1",
+    "@titanpl/native": "latest",
+    "@titanpl/node": "latest",
+    "@titanpl/packet": "latest",
+    "@titanpl/route": "latest",
     "bcryptjs": "^3.0.3",
     "chokidar": "^5.0.0",
     "esbuild": "^0.27.2"
+  },
+  "optionalDependencies": {
+    "@titanpl/engine-win32-x64": "2.0.3",
+    "@titanpl/engine-linux-x64": "2.0.4"
   },
   "scripts": {
     "build": "titan build",

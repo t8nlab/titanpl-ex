@@ -1,42 +1,23 @@
 # ================================================================
-# STAGE 1 — Build TitanPl
+# STAGE 1 — Builder
 # ================================================================
 FROM node:20.20.0-slim AS builder
 
+WORKDIR /app
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl ca-certificates build-essential pkg-config libssl-dev git bash \
-    && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | \
-       sh -s -- -y --default-toolchain stable --profile minimal \
+    curl ca-certificates build-essential pkg-config git bash \
     && rm -rf /var/lib/apt/lists/*
 
-ENV PATH="/root/.cargo/bin:${PATH}"
+ENV npm_config_platform=linux
+ENV npm_config_arch=x64
 ENV NODE_ENV=production
-ENV RUSTFLAGS="-C target-cpu=native -C strip=symbols"
 
-WORKDIR /app
+COPY package.json ./
 
-# ---------- Rust Cache ----------
-RUN mkdir -p server/src
-COPY server/Cargo.toml server/Cargo.lock* server/
-RUN echo "fn main(){}" > server/src/main.rs
-WORKDIR /app/server
-RUN cargo build --release
-RUN rm src/main.rs
-WORKDIR /app
+RUN npm install --omit=dev
 
-# ---------- Node Cache ----------
-COPY package.json package-lock.json* ./
-RUN if [ -f package-lock.json ]; then npm ci --omit=dev; else npm install --omit=dev; fi
-
-RUN npm install -g @ezetgalaxy/titan@latest
-
-# ---------- Copy Project ----------
-COPY . .
-
-RUN node app/app.js --build
-
-# ---------- Extensions ----------
-SHELL ["/bin/bash", "-c"]
+# ---- Extract Extensions (.ext) ----
 RUN mkdir -p /app/.ext && \
     find /app/node_modules -type f -name "titan.json" -print0 | \
     while IFS= read -r -d '' file; do \
@@ -46,65 +27,41 @@ RUN mkdir -p /app/.ext && \
         rm -rf "/app/.ext/$pkg_name/node_modules"; \
     done
 
-RUN titan build
+COPY . .
 
+RUN npx titan build
 
 
 # ================================================================
-# STAGE 2 — Runtime (Render Safe)
+# STAGE 2 — Production (PURE ENGINE)
 # ================================================================
 FROM debian:bookworm-slim
+
+WORKDIR /app
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
-# ---- Copy Files as root ----
-COPY --from=builder /app/server/target/release/titan-server ./titan-server
-COPY --from=builder /app/server/routes.json .
-COPY --from=builder /app/server/action_map.json .
-COPY --from=builder /app/server/src/actions ./actions
-
-# ---------------- OPTIONAL APP FOLDERS ----------------
-# If you add any extra folders inside /app/app,
-# make sure to copy them from the builder stage.
-
-# Static assets
-# COPY --from=builder /app/app/static ./static
-
-# Public assets
-# COPY --from=builder /app/app/public ./public
-
-#DB
-# COPY --from=builder /app/app/db ./db
-
-# Any custom / extra folders
-# Example:
-# COPY --from=builder /app/app/<folder-name> ./<folder-name>
-
-# -------------------------------------------------------
-
-
-# Extensions
+# Copy runtime artifacts
+COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.ext ./.ext
+COPY --from=builder /app/app/db ./db
 
-# ---- Ensure Executable ----
-RUN chmod +x ./titan-server
+# Copy entire bin folder from engine package
+COPY --from=builder /app/node_modules/@titanpl/engine-linux-x64/bin /bin
 
-# ---- Create User After Copy ----
+# Ensure executable permissions
+RUN chmod +x /bin/*
+
 RUN useradd -m titan && chown -R titan:titan /app
 USER titan
 
-# ---- Platform Defaults ----
 ENV HOST=0.0.0.0
 ENV PORT=5100
-
-# ---- Verify Node Not Present ----
-RUN which node || echo "NodeJS not present ✔"
+ENV TITAN_DEV=0
 
 EXPOSE 5100
 
-# ---- Force Foreground Process ----
-CMD ["./titan-server"]
+# Replace titan-server with actual filename if different
+CMD ["/bin/titan-server", "start", "dist"]

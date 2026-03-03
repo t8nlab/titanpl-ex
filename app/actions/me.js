@@ -1,6 +1,6 @@
 // app/actions/me.js
 
-import { jwt } from "@titan/native"
+import { jwt } from "@titanpl/native"
 
 export const me = (req) => {
 

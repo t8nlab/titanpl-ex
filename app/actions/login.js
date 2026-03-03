@@ -2,12 +2,12 @@
 
 /* eslint-disable titanpl/drift-only-titan-async */
 import "@titanpl/node/globals";
-import { fs, response } from "@titan/native";
-import { db } from "db/db";
+import { fs, response } from "@titanpl/native";
+import { db } from "../db/db.js";
 
 export const login = (req) => {
 
-    const sql = fs.readFile("../app/db/login.sql");
+    const sql = fs.readFile("app/db/login.sql");
     const { username, password } = req.body;
 
     if (!username || !password) {

@@ -16,7 +16,7 @@ server/actions/
 server/titan/
 server/src/actions_rust/
 server/src/actions/
-
+dist/
 
 # Rust Build Artifacts
 server/target/
