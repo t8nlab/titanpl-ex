@@ -1,12 +1,8 @@
-// app/actions/me.js
+import { log } from "@titanpl/native";
+import { auth } from "../auth/config"
 
-import { jwt } from "@titanpl/native"
+export function me(req) {
+  const user = auth.guard(req);
 
-export const me = (req) => {
-
-    const { tk } = req.body
-
-    const user = jwt.verify(tk, "jii")
-
-    return user;
+  return user
 }

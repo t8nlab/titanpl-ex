@@ -112,4 +112,3 @@ CREATE TABLE users (
 ## 📖 Further Reading
 
 For a detailed explanation of the business logic and how the actions work, see [ACTIONS_LOGIC.md](./ACTIONS_LOGIC.md).
-

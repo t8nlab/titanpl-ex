@@ -2,8 +2,10 @@
 
 import t from "@titanpl/route";
 
-t.post("/lg").action("login") // pass a json payload { "username": "titan", "password": "planet" }
+t.post("/lg").action("iauthlg")
 
-t.post("/me").action("me") // {"tk": "pass the token here"}
+t.get("/me").action("me")
+
+t.get("/").reply("Titan example server")
 
 t.start(5100, "Titan Running!");

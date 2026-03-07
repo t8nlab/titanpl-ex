@@ -4,6 +4,8 @@
 import "@titanpl/node/globals";
 import { fs, response } from "@titanpl/native";
 import { db } from "../db/db.js";
+import bcrypt from "bcryptjs"
+
 
 export const login = (req) => {
 
@@ -32,8 +34,7 @@ export const login = (req) => {
 
     const user = rows[0];
 
-    // Works with bcrypt hashes generated anywhere (Node, Express, etc.)
-    const valid = t.password.verify(password, user.password);
+    const valid = bcrypt.compareSync(password, user.password);
 
     if (!valid) {
         return response.json(
@@ -51,7 +52,7 @@ export const login = (req) => {
             email: user.email
         },
         "jii",
-        { expiresIn: "1m" }
+        { expiresIn: "7d" }
     );
 
     return response.json({
