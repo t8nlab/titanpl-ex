@@ -1,63 +1,69 @@
-# Actions & Logic Documentation
+# 🔐 Authentication Logic Documentation
 
-This document explains the development workflow and the business logic behind the application actions.
+This document explains the two authentication methods implemented in this application: **Manual Login Logic** and the **Official IAuth Extension**.
 
-## 🛤️ Route Definitions
+---
 
-Routes are defined in `app/app.js` using the TitanPL routing API. This is the entry point for your application logic.
+## 🛤️ Application Routes
+
+Routes are defined in `app/app.js`. We provide two endpoints for login to demonstrate both manual and automated authentication.
 
 ```javascript
 // app/app.js
-import t from "@titan/route";
+import t from "@titanpl/route";
 
-t.post("/lg").action("login");
-t.post("/me").action("me");
-t.get("/").reply("Read the README.md file to know everything");
+// Manual Login (Plain logic)
+t.post("/login").action("login");
 
-t.start(5100, "Titan Running!");
+// Official Secure Login (via IAuth extension)
+t.post("/iauth-login").action("iauthlg");
+
+t.get("/me").action("me");
+t.start(5100);
 ```
 
 ---
 
-## ⚙️ Action Logic Details
+## ⚙️ Action Logic Comparison
 
-### 1. Login Action (`app/actions/login.js`)
+### 1. Manual Login Action (`app/actions/login.js`)
 
-The `login` action handles user authentication by verifying credentials against the database and issuing a security token.
+This action represents the "manual" way of handling authentication. It gives you full control but requires manual management of every security step.
 
-#### Key Steps:
-1.  **Schema Loading**: Dynamically loads the SQL query from `app/db/login.sql` using the native filesystem API.
-2.  **Input Validation**: Ensures both `username` and `password` are provided in the request body.
-3.  **Database Lookup**:
-    *   Establishes a connection via the shared `db()` utility.
-    *   Executes the query using `drift()`, which allows asynchronous database operations to behave synchronously within the action.
-4.  **Security Verification**:
-    *   Uses `bcryptjs` to compare the plain-text password from the user with the hashed password stored in the database. This ensures passwords are never stored in plain text.
-5.  **Token Issuance**:
-    *   On successful verification, it generates a JSON Web Token (JWT) using `t.jwt.sign`.
-    *   The token contains the user's `id`, `username`, and `email`.
-    *   The password field is explicitly deleted from the user object before sending the response to ensure data privacy.
+#### 🏗️ Implementation Details:
+*   **FS Query Loading**: Loads raw SQL from `app/db/login.sql` using the native filesystem.
+*   **Manual Validation**: Explicitly checks for presence of `username` and `password`.
+*   **Native DB Query**: Executes the query using the `drift()` bridge for synchronous-style execution.
+*   **Manual Bcrypt Comparison**: Uses `bcryptjs` to manually verify the hashed password.
+*   **Manual Token Generation**: Uses `t.jwt.sign` to create a security token with a manual payload and secret.
+
+> [!WARNING]
+> While flexible, manual login requires you to manually handle token expiration, security headers, and data scrubbing.
 
 ---
 
-### 2. Me Action (`app/actions/me.js`)
+### 2. IAuth Extension Login (`app/actions/iauthlg.js`)
 
-The `me` action is a protected utility that retrieves user information from a provided session token.
+This is the **Official TitanPl Secure Auth Extension**. It simplifies authentication by abstracting the database lookups, security comparisons, and token management into a single, secure interface.
 
-#### Key Steps:
-1.  **Token Extraction**: Reads the `tk` (token) field from the request body.
-2.  **JWT Verification**: Uses the `jwt.verify` native module with the application's secret key (`jii`) to decode the token.
-3.  **State Recovery**: If the token is valid, it returns the decoded user payload stored inside the JWT, allowing the frontend to know "who" is logged in without querying the database again.
+#### 🏗️ Implementation Details:
+*   **Configuration-Based**: Everything is configured once in `app/auth/config.js`.
+*   **One-Liner Execution**: The entire login flow is handled by `auth.signIn(req.body)`.
+*   **Built-in Security**: Automatically handles secure password hashing, timing attack protection, and proper JWT payload management.
+*   **Scoped Returns**: Only returns the fields defined in your `scope` config, ensuring sensitive data (like password hashes) never leaks.
 
----
-
-## 🗄️ Database Integration
-
-Logic related to data persistence is separated into `app/db/`:
-
--   **`db.js`**: Centralizes the connection logic using `t.db.connect`. It uses the `DB_URI` from your environment variables.
--   **`login.sql`**: Contains the raw SQL for fetching users, keeping queries decoupled from the JavaScript code for better maintainability.
+> [!TIP]
+> **Why use IAuth?** It reduces boilerplate, follows official security best practices, and minimizes the risk of implementation errors in your authentication logic.
 
 ---
 
-> **Development Note**: All application logic resides within the `app/` directory. The `server/` directory is automatically managed by the TitanPL runtime and does not require manual modifications during development.
+## 🗄️ Shared Infrastructure
+
+Both methods utilize the same underlying database configuration:
+
+-   **`app/db/db.js`**: Centralized database connection sharing.
+-   **`app/auth/config.js`**: Configuration for the `IAuth` extension, defining which database table and fields to use for identity and security.
+
+---
+
+> **Development Note**: All application logic resides within the `app/` directory. The system automatically routes requests from the integrated server to these JavaScript actions.

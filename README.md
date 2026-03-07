@@ -6,7 +6,7 @@ A high-performance, production-ready server built with **TitanPL**, featuring us
 
 ### 1. Prerequisites
 - [Rust](https://www.rust-lang.org/tools/install) installed.
-- npm i -g @ezetgalaxy/titan
+- npm i -g @titanpl/cli
 - A PostgreSQL database instance.
 - [Postman](https://www.postman.com/) or any HTTP client for testing.
 

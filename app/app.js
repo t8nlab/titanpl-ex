@@ -1,11 +1,17 @@
 // app/app.js
-
 import t from "@titanpl/route";
 
-t.post("/lg").action("iauthlg")
+// 🛤️ Manual Login Route
+t.post("/login").action("login");
 
-t.get("/me").action("me")
+// 🛡️ Official IAuth Secure Login Route
+t.post("/iauth-login").action("iauthlg");
 
-t.get("/").reply("Titan example server")
+// User Context Route
+t.get("/me").action("me");
 
-t.start(5100, "Titan Running!");
+// Fallback Route
+t.get("/").reply("Titan Auth Example Server");
+
+t.start(5100, "Titan Running on port 5100!");
+
