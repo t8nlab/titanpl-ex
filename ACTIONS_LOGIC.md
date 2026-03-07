@@ -1,6 +1,6 @@
 # 🔐 Authentication Logic Documentation
 
-This document explains the two authentication methods implemented in this application: **Manual Login Logic** and the **Official IAuth Extension**.
+This document explains the two authentication methods implemented in this application: **Manual Login Logic** and the **IAuth Extension**.
 
 ---
 
@@ -15,7 +15,7 @@ import t from "@titanpl/route";
 // Manual Login (Plain logic)
 t.post("/login").action("login");
 
-// Official Secure Login (via IAuth extension)
+// Secure Login (via IAuth extension)
 t.post("/iauth-login").action("iauthlg");
 
 t.get("/me").action("me");
@@ -44,7 +44,7 @@ This action represents the "manual" way of handling authentication. It gives you
 
 ### 2. IAuth Extension Login (`app/actions/iauthlg.js`)
 
-This is the **Official TitanPl Secure Auth Extension**. It simplifies authentication by abstracting the database lookups, security comparisons, and token management into a single, secure interface.
+This is the **TitanPl Secure Auth Extension**. It simplifies authentication by abstracting the database lookups, security comparisons, and token management into a single, secure interface.
 
 #### 🏗️ Implementation Details:
 *   **Configuration-Based**: Everything is configured once in `app/auth/config.js`.
@@ -53,7 +53,7 @@ This is the **Official TitanPl Secure Auth Extension**. It simplifies authentica
 *   **Scoped Returns**: Only returns the fields defined in your `scope` config, ensuring sensitive data (like password hashes) never leaks.
 
 > [!TIP]
-> **Why use IAuth?** It reduces boilerplate, follows official security best practices, and minimizes the risk of implementation errors in your authentication logic.
+> **Why use IAuth?** It reduces boilerplate, follows security best practices, and minimizes the risk of implementation errors in your authentication logic.
 
 ---
 

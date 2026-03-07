@@ -50,9 +50,42 @@ CREATE TABLE users (
 
 ## 🛣️ API Documentation & Testing
 
-### 1. Login Route
-- **URL**: `POST /lg`
-- **Description**: Authenticates a user and returns a JWT token.
+### 1. Manual Login Route
+- **URL**: `POST /login`
+- **Description**: Authenticates a user using custom manual logic. Returns a JWT token.
+- **Request Body (JSON)**:
+  ```json
+  {
+    "username": "testuser",
+    "password": "yourpassword"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+    "auth_method": "manual",
+    "success": true,
+    "token": "eyJhbGci...",
+    "user": {
+      "id": 1,
+      "username": "testuser",
+      "email": "test@example.com"
+    }
+  }
+  ```
+
+#### 🔍 How it Works (Action: `login`)
+1. **Manual Parsing**: Extracts `username` and `password` from the request body.
+2. **FS Query**: Loads the raw SQL from `app/db/login.sql` via native FS.
+3. **Drift Bridge**: Executes DB queries synchronously within the action.
+4. **Bcrypt Verification**: Manually compares the password hash.
+5. **JWT Issuance**: Signs a token manually with a secret key (`jii`).
+
+---
+
+### 2. Secure Login Route (IAuth)
+- **URL**: `POST /iauth-login`
+- **Description**: Authenticates a user using the **IAuth Extension**. Returns a JWT token.
 - **Request Body (JSON)**:
   ```json
   {
@@ -73,22 +106,20 @@ CREATE TABLE users (
   }
   ```
 
-#### 🔍 How it Works (Action: `login`)
-1. **Request Parsing**: Extracts `username` and `password` from the request body.
-2. **SQL Execution**: Loads the query from `app/db/login.sql` and searches for the user in the database using `t.db.connect`.
-3. **Password Verification**: Uses `bcryptjs.compareSync` to verify the provided password against the stored hash.
-4. **Token Generation**: If valid, it signs a JWT token using `t.jwt.sign` with a 1-minute expiration and a secret key (`jii`).
-5. **Security**: Removes the password from the user object before returning it to the client.
+#### 🔍 How it Works (Action: `iauthlg`)
+1. **Abstraction**: The entire login flow is handled by `auth.signIn(req.body)`.
+2. **Configuration**: Uses the settings in `app/auth/config.js` for DB table and field mapping.
+3. **Security**: Automatically handles hashing, JWT creation, and data scrubbing.
 
 ---
 
-### 2. Profile Route
-- **URL**: `POST /me`
-- **Description**: Verifies a JWT token and returns the user payload.
-- **Request Body (JSON)**:
+### 3. Profile Route (Secure Guard)
+- **URL**: `GET /me`
+- **Description**: Retrieves the current user's payload from the bearer token.
+- **Headers**:
   ```json
   {
-    "tk": "YOUR_JWT_TOKEN_HERE"
+    "Authorization": "Bearer YOUR_JWT_TOKEN_HERE"
   }
   ```
 - **Response**:
@@ -103,9 +134,9 @@ CREATE TABLE users (
   ```
 
 #### 🔍 How it Works (Action: `me`)
-1. **Token Retrieval**: Extracts the token `tk` from the POST body.
-2. **Verification**: Uses `t.jwt.verify` with the internal secret key (`jii`).
-3. **Decoding**: If the token is valid and not expired, it returns the decoded JSON payload (user data). Otherwise, it throws an error/returns null.
+1. **Auth Guard**: Uses `auth.guard(req)` to verify the token in the incoming request.
+2. **Auto-Decoding**: If the token is valid, it returns the decoded user payload.
+3. **Access Control**: This pattern allows you to protect any route with a single function call.
 
 ---
 
