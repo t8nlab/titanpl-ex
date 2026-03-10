@@ -15,6 +15,8 @@ ENV NODE_ENV=production
 COPY package.json package-lock.json* ./
 
 # Install with optional dependencies so it grabs the correct engine for the Linux builder
+RUN npm install -g @titanpl/cli
+
 RUN npm install --include=optional
 
 # ------------------------------------------------
@@ -63,16 +65,9 @@ COPY --from=builder /app/.ext ./.ext
 
 # runtime assets
 COPY --from=builder /app/package.json ./package.json
-
-# ---------------- OPTIONAL APP FOLDERS ----------------
-# Static assets
-# COPY --from=builder /app/app/static ./static
-
-# Public assets
-# COPY --from=builder /app/app/public ./public
-
-# DB
-# COPY --from=builder /app/app/db ./db
+COPY --from=builder /app/app/db ./db
+COPY --from=builder /app/app/auth ./auth
+COPY --from=builder /app/app/static ./static
 
 # CRITICAL SYSTEM SETUP:
 # 1. Mandatory .env file (Engine requires it for config parsing)
