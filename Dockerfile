@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential pkg-config git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Titan CLI globally
+RUN npm install -g @titanpl/cli
+
 ENV NODE_ENV=production
 
 COPY package.json package-lock.json* ./
@@ -21,7 +24,7 @@ COPY . .
 
 # Run the Titan release build step
 # This extracts extensions to .ext and prepares the 'build/' folder
-RUN npx titan build --release
+RUN titan build --release
 
 
 # ================================================================
