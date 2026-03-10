@@ -1,7 +1,7 @@
 {
-  "name": "titanpl",
+  "name": "titanpl-ex",
   "version": "1.0.0",
-  "description": "A Titan Planet server",
+  "description": "A production ready Titan Planet server example",
   "type": "module",
   "titan": {
     "template": "js"
@@ -9,10 +9,9 @@
   "dependencies": {
     "@t8n/iauth": "^1.2.4",
     "@t8n/ui": "^1.8.3",
-    "@titanpl/cli": "latest",
     "@titanpl/core": "latest",
     "@titanpl/native": "latest",
-    "@titanpl/node": "^1.5.0",
+    "@titanpl/node": "latest",
     "@titanpl/packet": "latest",
     "@titanpl/route": "latest",
     "bcryptjs": "^3.0.3",

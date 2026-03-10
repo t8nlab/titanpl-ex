@@ -6,19 +6,14 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
-# Titan Runtime (Auto-generated - DO NOT COMMIT)
-titan/server-bin*
+# Titan Engine (Auto-generated - DO NOT COMMIT)
+dist/
 .titan/
 .ext/
-server/routes.json
-server/action_map.json
-server/actions/
-server/titan/
-server/src/actions_rust/
-server/src/actions/
-dist/
+.env
+build/
 
-# Rust Build Artifacts
+# Rust Build Artifacts (If using Hybrid)
 server/target/
 Cargo.lock
 
@@ -29,7 +24,6 @@ Thumbs.db
 *.bak
 
 # Environment & Secrets
-.env
 .env.local
 .env.*.local
 

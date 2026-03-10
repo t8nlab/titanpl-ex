@@ -13,5 +13,7 @@ t.get("/me").action("me");
 // Fallback Route
 t.get("/").reply("Titan Auth Example Server");
 
+t.get("/hello").action("hello")
+
 t.start(5100, "Titan Running on port 5100!");
 
