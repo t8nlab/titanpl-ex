@@ -73,6 +73,8 @@ COPY --from=builder /app/app/static ./static
 # Public assets
 # COPY --from=builder /app/app/public ./public
 
+COPY --from=builder /app/app/auth ./auth
+
 # DB
 COPY --from=builder /app/app/db ./db
 
