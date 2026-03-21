@@ -10,10 +10,11 @@ t.post("/iauth-login").action("iauthlg");
 // User Context Route
 t.get("/me").action("me");
 
-// Fallback Route
-t.get("/").reply("Titan Auth Example Server");
+t.ws("/chat").action("chat")
 
-t.get("/hello").action("hello")
+// Fallback Route
+t.get("/").action("home")
+
 
 t.start(5100, "Titan Running on port 5100!");
 

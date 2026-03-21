@@ -1,3 +1,4 @@
+/* eslint-disable titanpl/drift-only-titan-async */
 // app/actions/login.js
 /**
  * MANUAL LOGIN LOGIC

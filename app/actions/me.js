@@ -1,4 +1,5 @@
-import { log } from "@titanpl/native";
+// actions/me.js
+
 import { auth } from "../auth/config"
 
 export function me(req) {

@@ -10,18 +10,17 @@
     "@t8n/iauth": "^1.2.4",
     "@t8n/ui": "^1.8.3",
     "@titanpl/core": "latest",
-    "@titanpl/native": "latest",
+    "@titanpl/native": "^6.0.2",
     "@titanpl/node": "latest",
     "@titanpl/packet": "latest",
-    "@titanpl/route": "latest",
+    "@titanpl/route": "^6.0.0",
     "bcryptjs": "^3.0.3",
     "chokidar": "^5.0.0",
     "esbuild": "^0.27.2"
   },
   "optionalDependencies": {
-    "@titanpl/engine-linux-arm64": "2.0.5",
-    "@titanpl/engine-linux-x64": "2.0.5",
-    "@titanpl/engine-win32-x64": "2.0.3"
+    "@titanpl/engine-linux-x64": "6.0.1",
+    "@titanpl/engine-win32-x64": "6.0.0"
   },
   "scripts": {
     "build": "titan build",

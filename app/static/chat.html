@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Titan WS Test</title>
+</head>
+
+<body style="background: #111; color: #fff; font-family: sans-serif; padding: 2rem;">
+    <h1>🪐 Titan WebSocket Test</h1>
+    <div id="status" style="color: #666;">Connecting...</div>
+    <div id="messages"
+        style="margin-top: 1rem; border: 1px solid #333; padding: 1rem; height: 200px; overflow-y: auto; background: #000; font-family: monospace;">
+    </div>
+    <div style="margin-top: 1rem;">
+        <input id="input" style="background: #222; color: #fff; border: 1px solid #444; padding: 0.5rem; width: 300px;"
+            placeholder="Type a message...">
+        <button onclick="send()"
+            style="padding: 0.5rem 1rem; background: #3498db; color: #fff; border: none; cursor: pointer; border-radius: 4px;">Send</button>
+    </div>
+
+    <script>
+        const ws = new WebSocket('ws://' + location.host + '/chat');
+        const m = document.getElementById('messages');
+        const s = document.getElementById('status');
+
+        ws.onopen = () => { s.innerText = 'Connected'; s.style.color = '#2ecc71'; };
+        ws.onmessage = (e) => {
+            const d = document.createElement('div');
+            d.style.padding = '0.2rem 0';
+            d.style.borderBottom = '1px solid #111';
+            d.innerText = e.data;
+            m.appendChild(d);
+            m.scrollTop = m.scrollHeight;
+        };
+        ws.onclose = () => { s.innerText = 'Disconnected'; s.style.color = '#e74c3c'; };
+
+        function send() {
+            const i = document.getElementById('input');
+            if (i.value.trim()) {
+                ws.send(i.value);
+                i.value = '';
+            }
+        }
+
+        document.getElementById('input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') send();
+        });
+    </script>
+</body>
+
+</html>
