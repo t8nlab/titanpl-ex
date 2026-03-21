@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@t8n/iauth": "^1.2.4",
-    "@t8n/ui": "^1.8.3",
+    "@t8n/ui": "^1.8.4",
     "@titanpl/core": "latest",
     "@titanpl/native": "^6.0.2",
     "@titanpl/node": "latest",
