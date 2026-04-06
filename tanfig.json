@@ -3,12 +3,17 @@
     "description": "A production ready Titan Planet server example",
     "version": "1.0.0",
     "build": {
-        "purpose": "deploy",
         "files": [
             "public",
             "static",
             "db",
             "auth"
+        ]
+    },
+    "extensions": {
+        "allowWasm": true,
+        "allowNative": [
+            "@titanpl/core"
         ]
     }
 }

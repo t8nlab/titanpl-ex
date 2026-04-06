@@ -9,21 +9,23 @@
   "dependencies": {
     "@t8n/iauth": "^1.2.4",
     "@t8n/ui": "^1.8.4",
-    "@titanpl/core": "latest",
-    "@titanpl/native": "^6.0.2",
+    "@titanpl/cli": "^7.0.5",
+    "@titanpl/core": "^3.0.7",
+    "@titanpl/native": "^7.0.1",
     "@titanpl/node": "latest",
-    "@titanpl/packet": "latest",
-    "@titanpl/route": "^6.0.0",
+    "@titanpl/packet": "^7.0.5",
+    "@titanpl/route": "^7.0.1",
     "bcryptjs": "^3.0.3",
     "chokidar": "^5.0.0",
     "esbuild": "^0.27.2"
   },
   "optionalDependencies": {
-    "@titanpl/engine-linux-x64": "6.0.1",
-    "@titanpl/engine-win32-x64": "6.0.0"
+    "@titanpl/engine-linux-x64": "7.0.2",
+    "@titanpl/engine-win32-x64": "^7.0.1"
   },
   "scripts": {
     "build": "titan build",
+    "release": "titan build -r",
     "dev": "titan dev",
     "start": "titan start",
     "lint": "eslint .",

@@ -1,8 +1,12 @@
 // app/actions/home.js
 // simple chat ui render action with @t8n/ui extension
 
-import ui from "@t8n/ui";
+import { fs, response } from "@titanpl/native"
+
+
+
 
 export const home = (req) => {
-  return ui.render("static/chat.html")
+    let html = fs.readFile("../app/static/chat.html")
+    return response.html(html, { status: 200 })
 }

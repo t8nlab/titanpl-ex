@@ -6,6 +6,7 @@
  * password verification, and session management in one secure step.
  */
 
+import { response } from "@titanpl/core";
 import { auth } from "../auth/config.js";
 
 export function iauthlg(req) {
@@ -14,5 +15,5 @@ export function iauthlg(req) {
   // based on the configuration in app/auth/config.js
   const authResponse = auth.signIn(req.body);
 
-  return authResponse;
+  return response.json(authResponse, 200);
 }
